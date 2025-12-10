@@ -41,7 +41,7 @@ export default function Login() {
           />
           <button type="submit">Login</button>
         </form>
-        <p>Don't have an account? <Link to="/register">Register</Link></p>
+        <p>Don&apos;t have an account? <Link to="/register">Register</Link></p>
       </div>
     </div>
   );

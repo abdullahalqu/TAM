@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { tasksAPI } from '../services/api';
 
 export default function TaskList() {
@@ -10,11 +10,7 @@ export default function TaskList() {
   const [formData, setFormData] = useState({ title: '', description: '', priority: 'medium', status: 'pending' });
   const [editingId, setEditingId] = useState(null);
 
-  useEffect(() => {
-    loadTasks();
-  }, [filters]);
-
-  const loadTasks = async () => {
+  const loadTasks = useCallback(async () => {
     try {
       const res = await tasksAPI.getTasks(filters);
       setTasks(res.data);
@@ -23,7 +19,11 @@ export default function TaskList() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
+
+  useEffect(() => {
+    loadTasks();
+  }, [loadTasks]);
 
   const handleSearch = async () => {
     if (!search.trim()) {
