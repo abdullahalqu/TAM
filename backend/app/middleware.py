@@ -2,6 +2,7 @@
 Request logging middleware
 Logs all HTTP requests with timing and context
 """
+
 import time
 import uuid
 from fastapi import Request
@@ -33,7 +34,7 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
                 "method": request.method,
                 "endpoint": request.url.path,
                 "client_ip": request.client.host if request.client else None,
-            }
+            },
         )
 
         # Process request
@@ -52,7 +53,7 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
                     "endpoint": request.url.path,
                     "status_code": response.status_code,
                     "duration_ms": round(duration_ms, 2),
-                }
+                },
             )
 
             # Add request ID to response headers
@@ -74,7 +75,7 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
                     "duration_ms": round(duration_ms, 2),
                     "error": str(e),
                 },
-                exc_info=True
+                exc_info=True,
             )
 
             raise

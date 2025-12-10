@@ -1,6 +1,7 @@
 """
 Pydantic schemas - API validation
 """
+
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from typing import Optional
 from datetime import datetime
@@ -23,6 +24,7 @@ class StatusEnum(str, Enum):
 # User Schemas
 class UserCreate(BaseModel):
     """For registration"""
+
     email: EmailStr
     password: str = Field(..., min_length=6)
     full_name: Optional[str] = None
@@ -30,12 +32,14 @@ class UserCreate(BaseModel):
 
 class UserLogin(BaseModel):
     """For login"""
+
     email: EmailStr
     password: str
 
 
 class UserResponse(BaseModel):
     """What we return (no password!)"""
+
     id: UUID
     email: EmailStr
     full_name: Optional[str]
@@ -48,6 +52,7 @@ class UserResponse(BaseModel):
 # Token Schemas
 class Token(BaseModel):
     """JWT token response"""
+
     access_token: str
     token_type: str = "bearer"
 
@@ -55,6 +60,7 @@ class Token(BaseModel):
 # Task Schemas
 class TaskCreate(BaseModel):
     """Creating a task"""
+
     title: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = None
     priority: PriorityEnum = PriorityEnum.medium
@@ -63,6 +69,7 @@ class TaskCreate(BaseModel):
 
 class TaskUpdate(BaseModel):
     """Updating a task (all optional)"""
+
     title: Optional[str] = Field(None, min_length=1, max_length=255)
     description: Optional[str] = None
     priority: Optional[PriorityEnum] = None
@@ -71,6 +78,7 @@ class TaskUpdate(BaseModel):
 
 class TaskResponse(BaseModel):
     """What we return"""
+
     id: UUID
     user_id: UUID
     title: str

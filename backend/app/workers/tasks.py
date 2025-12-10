@@ -1,6 +1,7 @@
 """
 RQ Worker Tasks - Background job processing
 """
+
 import time
 from datetime import datetime
 import sys
@@ -42,8 +43,8 @@ def send_task_notification(task_id: str, task_title: str, user_email: str, actio
             "task_title": task_title,
             "action": action,
             "user_email": user_email,
-            "queue_status": "processing"
-        }
+            "queue_status": "processing",
+        },
     )
 
     # Simulate email sending delay
@@ -62,8 +63,8 @@ def send_task_notification(task_id: str, task_title: str, user_email: str, actio
             "user_email": user_email,
             "duration_ms": round(duration_ms, 2),
             "queue_status": "completed",
-            "result": "success"
-        }
+            "result": "success",
+        },
     )
 
     return {
@@ -72,7 +73,7 @@ def send_task_notification(task_id: str, task_title: str, user_email: str, actio
         "user_email": user_email,
         "action": action,
         "sent_at": datetime.utcnow().isoformat(),
-        "duration_ms": round(duration_ms, 2)
+        "duration_ms": round(duration_ms, 2),
     }
 
 
@@ -94,8 +95,8 @@ def process_bulk_tasks(task_ids: list):
             "job_type": "process_bulk_tasks",
             "job_id": job_id,
             "task_count": len(task_ids),
-            "queue_status": "processing"
-        }
+            "queue_status": "processing",
+        },
     )
 
     processed = 0
@@ -107,8 +108,8 @@ def process_bulk_tasks(task_ids: list):
                 "job_type": "process_bulk_tasks",
                 "job_id": job_id,
                 "task_id": task_id,
-                "progress": f"{processed + 1}/{len(task_ids)}"
-            }
+                "progress": f"{processed + 1}/{len(task_ids)}",
+            },
         )
         time.sleep(0.5)
         processed += 1
@@ -125,12 +126,12 @@ def process_bulk_tasks(task_ids: list):
             "processed_count": processed,
             "duration_ms": round(duration_ms, 2),
             "queue_status": "completed",
-            "result": "success"
-        }
+            "result": "success",
+        },
     )
 
     return {
         "status": "completed",
         "processed_count": processed,
-        "duration_ms": round(duration_ms, 2)
+        "duration_ms": round(duration_ms, 2),
     }

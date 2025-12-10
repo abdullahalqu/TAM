@@ -2,6 +2,7 @@
 Centralized Logging Configuration
 Structured logging for easy integration with Loki, Grafana, ELK, etc.
 """
+
 import logging
 import sys
 import json
@@ -33,15 +34,34 @@ class JSONFormatter(logging.Formatter):
 
         # Standard LogRecord attributes to exclude from extra fields
         standard_attrs = {
-            'name', 'msg', 'args', 'created', 'filename', 'funcName', 'levelname',
-            'levelno', 'lineno', 'module', 'msecs', 'message', 'pathname', 'process',
-            'processName', 'relativeCreated', 'thread', 'threadName', 'exc_info',
-            'exc_text', 'stack_info', 'getMessage', 'taskName'
+            "name",
+            "msg",
+            "args",
+            "created",
+            "filename",
+            "funcName",
+            "levelname",
+            "levelno",
+            "lineno",
+            "module",
+            "msecs",
+            "message",
+            "pathname",
+            "process",
+            "processName",
+            "relativeCreated",
+            "thread",
+            "threadName",
+            "exc_info",
+            "exc_text",
+            "stack_info",
+            "getMessage",
+            "taskName",
         }
 
         # Automatically add all custom extra fields
         for key, value in record.__dict__.items():
-            if key not in standard_attrs and not key.startswith('_'):
+            if key not in standard_attrs and not key.startswith("_"):
                 log_data[key] = value
 
         # Environment info
@@ -59,16 +79,16 @@ class StandardFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         # Color codes for terminal
         colors = {
-            'DEBUG': '\033[36m',     # Cyan
-            'INFO': '\033[32m',      # Green
-            'WARNING': '\033[33m',   # Yellow
-            'ERROR': '\033[31m',     # Red
-            'CRITICAL': '\033[35m',  # Magenta
+            "DEBUG": "\033[36m",  # Cyan
+            "INFO": "\033[32m",  # Green
+            "WARNING": "\033[33m",  # Yellow
+            "ERROR": "\033[31m",  # Red
+            "CRITICAL": "\033[35m",  # Magenta
         }
-        reset = '\033[0m'
+        reset = "\033[0m"
 
-        level_color = colors.get(record.levelname, '')
-        timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+        level_color = colors.get(record.levelname, "")
+        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 
         log_message = (
             f"{level_color}[{timestamp}] "
@@ -144,7 +164,13 @@ logger = setup_logging()
 
 
 # Example usage and helper functions
-def log_request(method: str, endpoint: str, status_code: int, duration_ms: float, user_id: str = None):
+def log_request(
+    method: str,
+    endpoint: str,
+    status_code: int,
+    duration_ms: float,
+    user_id: str = None,
+):
     """Helper to log HTTP requests with structured data"""
     extra = {
         "method": method,

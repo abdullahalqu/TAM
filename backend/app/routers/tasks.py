@@ -1,6 +1,7 @@
 """
 Task management endpoints
 """
+
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
@@ -20,7 +21,7 @@ router = APIRouter(prefix="/tasks", tags=["Tasks"])
 def create_task(
     task_data: TaskCreate,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     Create a new task for the current user
@@ -31,7 +32,7 @@ def create_task(
         title=task_data.title,
         description=task_data.description,
         priority=task_data.priority,
-        status=task_data.status
+        status=task_data.status,
     )
 
     db.add(new_task)
@@ -44,7 +45,7 @@ def create_task(
             task_id=str(new_task.id),
             task_title=str(new_task.title),
             user_email=str(current_user.email),
-            action="created"
+            action="created",
         )
     except Exception as e:
         # Don't fail the request if queue fails
@@ -58,7 +59,7 @@ def get_tasks(
     status: Optional[StatusEnum] = Query(None, description="Filter by status"),
     priority: Optional[PriorityEnum] = Query(None, description="Filter by priority"),
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     Get all tasks for current user with optional filters
@@ -79,19 +80,21 @@ def get_tasks(
 def search_tasks(
     q: str = Query(..., min_length=1, description="Search query"),
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     Search tasks by title or description (BONUS FEATURE)
     """
     search_term = f"%{q}%"
-    tasks = db.query(Task).filter(
-        Task.user_id == current_user.id,
-        or_(
-            Task.title.ilike(search_term),
-            Task.description.ilike(search_term)
+    tasks = (
+        db.query(Task)
+        .filter(
+            Task.user_id == current_user.id,
+            or_(Task.title.ilike(search_term), Task.description.ilike(search_term)),
         )
-    ).order_by(Task.created_at.desc()).all()
+        .order_by(Task.created_at.desc())
+        .all()
+    )
 
     return tasks
 
@@ -100,20 +103,20 @@ def search_tasks(
 def get_task(
     task_id: UUID,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     Get a single task by ID
     """
-    task = db.query(Task).filter(
-        Task.id == task_id,
-        Task.user_id == current_user.id
-    ).first()
+    task = (
+        db.query(Task)
+        .filter(Task.id == task_id, Task.user_id == current_user.id)
+        .first()
+    )
 
     if not task:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Task not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
         )
 
     return task
@@ -124,20 +127,20 @@ def update_task(
     task_id: UUID,
     task_update: TaskUpdate,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     Update a task (only updates provided fields)
     """
-    task = db.query(Task).filter(
-        Task.id == task_id,
-        Task.user_id == current_user.id
-    ).first()
+    task = (
+        db.query(Task)
+        .filter(Task.id == task_id, Task.user_id == current_user.id)
+        .first()
+    )
 
     if not task:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Task not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
         )
 
     # Update only provided fields
@@ -155,20 +158,20 @@ def update_task(
 def delete_task(
     task_id: UUID,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     Delete a task
     """
-    task = db.query(Task).filter(
-        Task.id == task_id,
-        Task.user_id == current_user.id
-    ).first()
+    task = (
+        db.query(Task)
+        .filter(Task.id == task_id, Task.user_id == current_user.id)
+        .first()
+    )
 
     if not task:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Task not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
         )
 
     db.delete(task)

@@ -1,6 +1,7 @@
 """
 Database configuration and session management
 """
+
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -12,7 +13,9 @@ logger = get_logger(__name__)
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://taskuser:taskpass@localhost:5432/taskdb")
+DATABASE_URL = os.getenv(
+    "DATABASE_URL", "postgresql://taskuser:taskpass@localhost:5432/taskdb"
+)
 
 # Create SQLAlchemy engine
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
